@@ -2,34 +2,34 @@ const assert = require('assert');
 const coordMaker = require('../coord-maker');
 
 describe('Coord Maker', () => {
-  it('returns an array of numbers from an eight digit string', () => {
-    const eightDigits = "12345678";
-    const expectedOutput = [[1, 2], [3, 4], [5, 6], [7, 8]];
+  it('returns an array of numbers from a ten digit string', () => {
+    const tenDigits = "1234567899";
+    const expectedOutput = [[1, 2], [3, 4], [5, 6], [7, 8], [9, 9]];
 
-    actualOutput = coordMaker(eightDigits);
+    actualOutput = coordMaker(tenDigits);
 
     assert.deepStrictEqual(actualOutput, expectedOutput)
   })
 
   it('returns an array of numbers with zeros included', () => {
-    const eightDigits = "00010203";
-    const expectedOutput = [[0, 0], [0, 1], [0, 2], [0, 3]]
+    const tenDigits = "0001020304";
+    const expectedOutput = [[0, 0], [0, 1], [0, 2], [0, 3], [0, 4]];
 
-    actualOutput = coordMaker(eightDigits);
+    actualOutput = coordMaker(tenDigits);
 
     assert.deepStrictEqual(actualOutput, expectedOutput)
   })
 
   it('raises an error if the incorrect number of digits is passed in', () => {
-    const sevenDigits = "1234567";
+    const elevenDigits = "12345678987";
     const nineDigits = "123456789";
     
-    assert.throws(() => {coordMaker(sevenDigits)}, RangeError);
+    assert.throws(() => {coordMaker(elevenDigits)}, RangeError);
     assert.throws(() => {coordMaker(nineDigits)}, RangeError);
   })
 
   it('raises an error if type of argument is not a string', () => {
-    const notAString = 12345678;
+    const notAString = 1234567898;
     const alsoNotAString = undefined;
 
     assert.throws(() => {coordMaker(notAString)}, TypeError);
@@ -37,7 +37,7 @@ describe('Coord Maker', () => {
   })
 
   it('raises an error if the string contains non-numeric characters', () => {
-    const incorrectString = "123A56B8";
+    const incorrectString = "123A56B898";
 
     assert.throws(() => {coordMaker(incorrectString)}, TypeError);
   })

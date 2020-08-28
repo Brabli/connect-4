@@ -20,32 +20,33 @@ describe('Board Class', () => {
     })
   })
 
-  describe('reset', () => {
+  describe('.reset()', () => {
     it('resets a populated board to an empty one', () => {
-      board = new Board();
-      board.move(0, 'x');
-      board.move(0, 'y');
-      board.move(5, 'y');
+      const testBoard = new Board();
+      const emptytBoardObject = new Board();
+      const emptyBoard = emptytBoardObject.board;
 
-      outputBoard = new Board();
-      expectedOutput = outputBoard.board;
+      testBoard.move(0, 'x');
+      testBoard.move(0, 'y');
+      testBoard.move(5, 'y');
+      testBoard.reset();
 
-      board.reset();
-      assert.deepStrictEqual(board.board, expectedOutput)
+      assert.deepStrictEqual(testBoard.board, emptyBoard)
     })
   })
 
-  describe('scan', () => {
+  describe('.scan()', () => {
     it('returns an array of all scanned lines', () => {
       const board = new Board();
 
       scannedLines = board.scan();
-      assert.ok(scannedLines.length === 69);
+      assert.ok(scannedLines.length === 44);
+      assert.ok(scannedLines instanceof Array);
     })
   })
 
-  describe('clone', () => {
-    it('copies Board object and returns an identical Board object', () => {
+  describe('.clone()', () => {
+    it('copies the current Board object and returns an identical, new Board object', () => {
       const board = new Board();
 
       board.move(0, 'x');

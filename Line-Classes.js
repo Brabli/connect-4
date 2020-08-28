@@ -8,33 +8,68 @@ class Line {
     this.B = coords[1];
     this.C = coords[2];
     this.D = coords[3];
-    // emptyColumns: An array of numbers representing which columns are open in the line.
+    this.E = coords[4];
+    // emptyColumns: An array of numbers representing which columns are open in the line. Returns an empty array if none.
     this.emptyColumns = getEmptyColumns(string, coords);
     
-    // useful: True if line is not completely full nor completely empty
-    if (this.string === '----' || this.string.match(/[x|y][x|y][x|y][x|y]/)) {
-      this.useful = false;
-    } else {
+    // useful: True if line is not completely full nor completely empty.
+    if (!this.string.match(/(\w\w\w\w\w)|(-----)/)) {
       this.useful = true;
+    } else {
+      this.useful = false;
     }
     // winning: True if string is 4 of the same characters in a row that aren't '----'
-    if (this.string === 'xxxx' || this.string === 'yyyy') {
+    if (this.string.match(/(xxxx)|(yyyy)/)) {
       this.winning = true;
     } else {
       this.winning = false;
     }
-    // movable or immidiatelyMovable
+    // movable: True if any blank spaces can be immidiately moved to, false otherwise.
+    this.movable = false;
+    for (let i = 0; i < 5; i++) {
+      if (!gameboard) break;
+      if (this.string[i] === '-') {
+        if (this.coords[i][0] === 5) {
+          this.movable = true;
+          break;
+        }
+        let squareCoords = this.coords[i];
+        let underSquareCoords = [squareCoords[0] + 1, squareCoords[1]];
+        // Debugging
+        // console.log(`Square Coords: ${this.coords[i]}`);
+        // console.log(`Under Coords: ${underSquareCoords}`);
+
+        try {
+            if (gameboard[underSquareCoords[0]][underSquareCoords[1]] !== '-') {
+              this.movable = true;
+              break;
+            } else {
+              continue;
+            }
+        } catch(err) {
+          if (err instanceof TypeError) continue;
+          console.log(err);
+          break;
+        }
+      }
+    }
     // movableCols []
-
   }
-    filter(arrayOfLines) {
-
+  // This will eventually be able to filter out certain line objects from an array of line objects
+  filter(arrayOfLines) {
+    return null;
   }
 }
 
+
+
+
+
+
+
 const getEmptyColumns = (string, coords) => {
   let emptyColumnIndicies = [];
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < 5; i++) {
     if (string[i] !== '-') continue;
     emptyColumnIndicies.push(coords[i][1]);
   }
@@ -44,63 +79,4 @@ const getEmptyColumns = (string, coords) => {
   return emptyColumnIndicies;
 }
 
-class RowLine extends Line {
-  constructor(string, coords) {
-    super(string, coords);
-    this.row = this.A[0]; // ?
-    // If A's col value is 0 or D's col value is 6: onEdge is TRUE
-    if (this.A[1] === 0 || this.D[1] === 6) {
-      this.onEdge = true;
-    } else {
-      this.onEdge = false;
-    }
-  }
-}
-
-class ColLine extends Line {
-  constructor(string, coords) {
-    super(string, coords);
-    this.col = this.A[1]
-    // If A's row values is 0 or D's row value is 5: onEdge is TRUE
-    if (this.A[0] === 0 || this.D[0] === 5) {
-      this.onEdge = true;
-    } else {
-      this.onEdge = false;
-    }
-  }
-}
-
-class DiagLineBack extends Line {
-  constructor(string, coords) {
-    super(string, coords);
-    // If A's col or row is 0: onEdge is TRUE
-    if (this.A[0] === 0 || this.A[1] === 0) {
-      this.onEdge = true;
-    // If D's row is 5 or col is 6: onEdge is TRUE
-    } else if (this.D[0] === 5 || this.D[1] === 6) {
-      this.onEdge = true;
-    } else {
-      this.onEdge = false;
-    }
-  }
-}
-
-class DiagLineFront extends Line {
-  constructor(string, coords) {
-    super(string, coords);
-    // If A's col is 0 or row is 6: onEdge is TRUE
-    if (this.A[0] === 0 || this.A[1] === 6) {
-      this.onEdge = true;
-    // If D's row is 5 or col is 0: onEdge is TRUE
-    } else if (this.D[0] === 5 || this.D[1] === 0) {
-      this.onEdge = true;
-    } else {
-      this.onEdge = false;
-    }
-  }
-}
-
-
-
-
-module.exports = { Line, RowLine, ColLine, DiagLineBack, DiagLineFront };
+module.exports = Line;

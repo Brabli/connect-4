@@ -1,4 +1,3 @@
-const { RowLine, ColLine, DiagLineBack, DiagLineFront } = require('./Line-Classes');
 const Board = require('./board-class');
 
 // Add count method. Just like in Python!
@@ -12,5 +11,6 @@ board.move(0, 'x');
 board.move(0, 'y');
 board.move(0, 'x');
 board.move(0, 'y');
+board.scan();
 
 board.show();
