@@ -90,7 +90,6 @@ class Board {
     this.board.forEach(row => console.log(JSON.stringify(row)));
   };
 
-
   clone() {
     const clone = new Board();
     clone.board = JSON.parse(JSON.stringify(this.board));
