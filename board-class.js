@@ -33,7 +33,7 @@ class Board {
       }
     }
   }
-
+  // Scans board creating an array of lines. If bool is true, console.log each line.
   scan(bool = false) {
     let rows = [], cols = [], diags = [];
     let lineString, lineCoords;

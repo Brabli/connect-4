@@ -1,4 +1,4 @@
-// Coords are always ROW then COL
+// Coords are always ROW then COL.
 class Line { 
   constructor(string, coords, gameboard) {
     this.string = string;
@@ -24,36 +24,34 @@ class Line {
     } else {
       this.winning = false;
     }
+
     // movable: True if any blank spaces can be immidiately moved to, false otherwise.
     this.movable = false;
+    this.movableColumns = [];
+    // Loops once for each Line.string index
     for (let i = 0; i < 5; i++) {
+      // If no gameboard provided, break loop. If current stringIndex is not "-", skip iter.
       if (!gameboard) break;
-      if (this.string[i] === '-') {
-        if (this.coords[i][0] === 5) {
-          this.movable = true;
-          break;
-        }
-        let squareCoords = this.coords[i];
-        let underSquareCoords = [squareCoords[0] + 1, squareCoords[1]];
-        // Debugging
-        // console.log(`Square Coords: ${this.coords[i]}`);
-        // console.log(`Under Coords: ${underSquareCoords}`);
+      if (this.string[i] !== '-') continue;
 
-        try {
-            if (gameboard[underSquareCoords[0]][underSquareCoords[1]] !== '-') {
-              this.movable = true;
-              break;
-            } else {
-              continue;
-            }
-        } catch(err) {
-          if (err instanceof TypeError) continue;
-          console.log(err);
-          break;
-        }
+      let currentSquareCoords = this.coords[i];
+      let underSquareCoords = [currentSquareCoords[0] + 1, currentSquareCoords[1]];
+
+      if (currentSquareCoords[0] === 5) {
+        this.movable = true;
+        this.movableColumns.push(currentSquareCoords[1]);
+        continue;
+      }
+  
+      if (gameboard[underSquareCoords[0]][underSquareCoords[1]] !== '-') {
+        this.movable = true;
+        this.movableColumns.push(currentSquareCoords[1]);
       }
     }
-    // movableCols []
+
+    this.unblockableRowOfThree = false;
+    if (this.string) null;
+
   }
   // This will eventually be able to filter out certain line objects from an array of line objects
   filter(arrayOfLines) {

@@ -2,7 +2,7 @@ const assert = require('assert');
 const Line = require('../Line-Classes');
 const coordMaker = require('../coord-maker');
 const Board = require('../board-class');
-const { isString } = require('util'); // What was this for?
+// const { isString } = require('util'); // What was this for?
 
 describe('Line Class', () => {
   describe('Line', () => {
@@ -12,8 +12,8 @@ describe('Line Class', () => {
 
       const line = new Line(string, coords);
 
-      assert.equal(line.string, string);
-      assert.equal(line.coords, coords);
+      assert.strictEqual(line.string, string);
+      assert.strictEqual(line.coords, coords);
       assert.ok(line instanceof Line);
     })
 
@@ -117,9 +117,9 @@ describe('Line Class', () => {
         const rowLine = new Line('x-x-x', coordMaker('5051525354'), this.testboard);
         const diagLine = new Line('x---c', coordMaker('1021324354'), this.testboard);
 
-        assert.equal(colLine.movable, true);
-        assert.equal(rowLine.movable, true);
-        assert.equal(diagLine.movable, true);
+        assert.strictEqual(colLine.movable, true);
+        assert.strictEqual(rowLine.movable, true);
+        assert.strictEqual(diagLine.movable, true);
       })
 
       it('returns false if no empty spaces in a line can be filled this turn', () => {
@@ -127,9 +127,19 @@ describe('Line Class', () => {
         const rowLine = new Line('x-xxx', coordMaker('4243444546'), this.testboard);
         const diagLine = new Line('xxx-b', coordMaker('1625344352'), this.testboard);
 
-        assert.equal(colLine.movable, false);
-        assert.equal(rowLine.movable, false);
-        assert.equal(diagLine.movable, false);
+        assert.strictEqual(colLine.movable, false);
+        assert.strictEqual(rowLine.movable, false);
+        assert.strictEqual(diagLine.movable, false);
+      })
+      // 'Immidiately movable' meaning player can fill that space in one move.
+      it('sets movableColumns to an array of all immidiately movable columns', () => {
+        const colLine = new Line('-xxyx', coordMaker('0010203040'), this.testboard);
+        const rowLine = new Line('x-x-x', coordMaker('5051525354'), this.testboard);
+        const diagLine = new Line('x---c', coordMaker('1021324354'), this.testboard);
+        
+        assert.deepStrictEqual(colLine.movableColumns, [0]);
+        assert.deepStrictEqual(rowLine.movableColumns, [1, 3]);
+        assert.deepStrictEqual(diagLine.movableColumns, [2]);
       })
     })
   })
