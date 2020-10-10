@@ -1,6 +1,6 @@
 const coordMaker = nums => {
   if (typeof nums !== 'string') throw new TypeError('Digits must be a string!')
-  if (nums.length !== 10) throw new RangeError("Input must be eight digits long!");
+  if (nums.length !== 10) throw new RangeError("Input must be ten digits long!");
 
   numberArray = Array.from(nums, num => Number(num));
 

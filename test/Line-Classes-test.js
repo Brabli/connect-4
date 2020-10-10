@@ -37,22 +37,40 @@ describe('Line Class', () => {
       })
     })
 
-    describe('.winning', () => {
-      it('marks a line as winning if it contains four of the same characters in a row', () => {
-        const winningLineX = 'yxxxx';
-        const winningLineY = 'yyyy-';
+    describe('.winningX', () => {
+      it('marks a line as winning if it contains four x\'s in a row', () => {
+        const winningLineA = 'yxxxx';
+        const winningLineB = 'xxxx-';
 
-        const lineX = new Line(winningLineX, coordMaker("0011223344"));
-        const lineY = new Line(winningLineY, coordMaker("0011223344"));
+        const lineA = new Line(winningLineA, coordMaker("0011223344"));
+        const lineB = new Line(winningLineB, coordMaker("0011223344"));
 
-        assert.ok(lineX.winning);
-        assert.ok(lineY.winning);
+        assert.ok(lineA.winningX);
+        assert.ok(lineB.winningX);
       })
 
       it('does not mark a line as winning if it contains four of the same characters but not next to each other', () => {
         const notWinningString = 'xxyxx';
         const notWinningLine = new Line(notWinningString, coordMaker("0011223344"));
-        assert.ok(!notWinningLine.winning);
+        assert.ok(!notWinningLine.winningX);
+      })
+    })
+    describe('.winningY', () => {
+      it('marks a line as winning if it contains four y\'s in a row', () => {
+        const winningLineA = '-yyyy';
+        const winningLineB = 'yyyyx';
+
+        const lineA = new Line(winningLineA, coordMaker("0011223344"));
+        const lineB = new Line(winningLineB, coordMaker("0011223344"));
+
+        assert.ok(lineA.winningY);
+        assert.ok(lineB.winningY);
+      })
+
+      it('does not mark a line as winning if it contains four of the same characters but not next to each other', () => {
+        const notWinningString = 'yyy-y';
+        const notWinningLine = new Line(notWinningString, coordMaker("0011223344"));
+        assert.ok(!notWinningLine.winningY);
       })
     })
 
@@ -141,6 +159,249 @@ describe('Line Class', () => {
         assert.deepStrictEqual(rowLine.movableColumns, [1, 3]);
         assert.deepStrictEqual(diagLine.movableColumns, [2]);
       })
+    })
+
+    describe('unblockableRowOfThreeX', () => {
+      it("Is set to true if an unblockable row of three can be created in one move for x", () => {
+      const testboard = [
+          // ROW then COL
+          //  0    1    2    3    4    5    6
+            ['-', '-', '-', '-', '-', '-', '-'], // 0  
+            ['-', 'x', '-', '-', '-', '-', '-'], // 1  
+            ['-', '-', '-', 'x', '-', '-', '-'], // 2  
+            ['-', '-', '-', 'x', '-', '-', 'x'], // 3  
+            ['-', 'x', '-', 'y', '-', '-', 'x'], // 4  
+            ['-', 'x', '-', 'x', '-', '-', 'x']  // 5  
+          ];
+
+        const rowLine = new Line('-x-x-', coordMaker('5051525354'), testboard);
+        const diagLine = new Line('-x-x-', coordMaker('0011223344'), testboard);
+
+        assert.strictEqual(rowLine.unblockableRowOfThreeX, true);
+        assert.strictEqual(rowLine.unblockableRowOfThreeXColumn, 2);
+        assert.strictEqual(diagLine.unblockableRowOfThreeX, false);
+        assert.strictEqual(diagLine.unblockableRowOfThreeXColumn, undefined);
+
+      })
+    })
+
+    describe('unblockableRowOfThreeY', () => {
+      it("Is set to true if an unblockable row of three can be created in one move for y", () => {
+      const testboard = [
+          // ROW then COL
+          //  0    1    2    3    4    5    6
+            ['-', '-', '-', '-', '-', '-', '-'], // 0  
+            ['-', 'y', '-', '-', '-', '-', '-'], // 1  
+            ['-', '-', '-', 'y', '-', '-', '-'], // 2  
+            ['-', '-', '-', 'y', '-', '-', 'x'], // 3  
+            ['-', 'x', '-', 'y', '-', '-', 'x'], // 4  
+            ['-', 'y', '-', 'y', '-', '-', 'x']  // 5  
+          ];
+
+        const rowLine = new Line('-y-y-', coordMaker('5051525354'), testboard);
+        const diagLine = new Line('-y-y-', coordMaker('0011223344'), testboard);
+
+        assert.strictEqual(rowLine.unblockableRowOfThreeY, true);
+        assert.strictEqual(diagLine.unblockableRowOfThreeY, false);
+
+      })
+    })
+
+    describe('rowOfThreeX', () => {
+      it('is set to true if a row of three x\'s can be made on one move', () => {
+        const testboard = [
+          // ROW then COL
+          //  0    1    2    3    4    5    6
+            ['-', 'y', '-', '-', '-', '-', '-'], // 0  
+            ['-', '-', '-', '-', '-', '-', '-'], // 1  
+            ['-', '-', 'y', 'x', '-', '-', '-'], // 2  
+            ['-', '-', '-', '-', '-', '-', '-'], // 3  
+            ['x', '-', '-', '-', 'x', 'x', '-'], // 4  
+            ['x', '-', 'x', '-', 'x', '-', '-']  // 5  
+          ];
+        
+        const colLine = new Line('---xx', coordMaker('1020304050'), testboard);
+        const rowLine = new Line('x-x-x', coordMaker('5051525354'), testboard);
+        const diagLine = new Line('y-x-x', coordMaker('0112233445'), testboard);
+        
+        assert.strictEqual(colLine.rowOfThreeX, true);
+        assert.strictEqual(rowLine.rowOfThreeX, true);
+        assert.strictEqual(diagLine.rowOfThreeX, true);
+        assert.deepStrictEqual(colLine.rowOfThreeXColumns, [0]);
+        assert.deepStrictEqual(rowLine.rowOfThreeXColumns, [1, 3]);
+        assert.deepStrictEqual(diagLine.rowOfThreeXColumns, [2, 4]);
+      })
+
+      it('is set to false if the conditions are not met', () => {
+        const testboard = [
+          // ROW then COL
+          //  0    1    2    3    4    5    6
+            ['-', 'y', '-', '-', '-', '-', '-'], // 0  
+            ['-', '-', '-', '-', '-', '-', '-'], // 1  
+            ['-', '-', '-', 'x', '-', '-', '-'], // 2  
+            ['y', '-', '-', '-', '-', '-', '-'], // 3  
+            ['x', '-', '-', '-', '-', 'x', '-'], // 4  
+            ['x', '-', 'x', 'y', 'x', '-', '-']  // 5  
+          ];
+
+        const colLine = new Line('--yxx', coordMaker('1020304050'), testboard);
+        const rowLine = new Line('x-xyx', coordMaker('5051525354'), testboard);
+        const diagLine = new Line('y-x-x', coordMaker('0112233445'), testboard);
+        
+        assert.strictEqual(colLine.rowOfThreeX, false);
+        assert.strictEqual(rowLine.rowOfThreeX, false);
+        assert.strictEqual(diagLine.rowOfThreeX, false);
+        assert.deepStrictEqual(colLine.rowOfThreeXColumns, []);
+        assert.deepStrictEqual(rowLine.rowOfThreeXColumns, []);
+        assert.deepStrictEqual(diagLine.rowOfThreeXColumns, []);
+      })
+    })
+
+    describe('rowOfThreeY', () => {
+      it('is set to true if a row of three y\'s can be made on one move', () => {
+        const testboard = [
+          // ROW then COL
+          //  0    1    2    3    4    5    6
+            ['-', 'x', '-', '-', '-', '-', '-'], // 0  
+            ['-', '-', '-', '-', '-', '-', '-'], // 1  
+            ['-', '-', 'y', 'y', '-', '-', '-'], // 2  
+            ['-', '-', '-', '-', '-', '-', '-'], // 3  
+            ['y', '-', '-', '-', 'y', 'y', '-'], // 4  
+            ['y', '-', 'y', '-', 'y', '-', '-']  // 5  
+          ];
+        
+        const colLine = new Line('---yy', coordMaker('1020304050'), testboard);
+        const rowLine = new Line('y-y-y', coordMaker('5051525354'), testboard);
+        const diagLine = new Line('x-y-y', coordMaker('0112233445'), testboard);
+        
+        assert.strictEqual(colLine.rowOfThreeY, true);
+        assert.strictEqual(rowLine.rowOfThreeY, true);
+        assert.strictEqual(diagLine.rowOfThreeY, true);
+      })
+
+      it('is set to false if the conditions are not met', () => {
+        const testboard = [
+          // ROW then COL
+          //  0    1    2    3    4    5    6
+            ['-', 'x', '-', '-', '-', '-', '-'], // 0  
+            ['-', '-', '-', '-', '-', '-', '-'], // 1  
+            ['-', '-', '-', 'y', '-', '-', '-'], // 2  
+            ['x', '-', '-', '-', '-', '-', '-'], // 3  
+            ['y', '-', '-', '-', '-', 'y', '-'], // 4  
+            ['y', '-', 'y', 'x', 'y', '-', '-']  // 5  
+          ];
+
+        const colLine = new Line('--xyy', coordMaker('1020304050'), testboard);
+        const rowLine = new Line('y-yxy', coordMaker('5051525354'), testboard);
+        const diagLine = new Line('x-y-y', coordMaker('0112233445'), testboard);
+        
+        assert.strictEqual(colLine.rowOfThreeY, false);
+        assert.strictEqual(rowLine.rowOfThreeY, false);
+        assert.strictEqual(diagLine.rowOfThreeY, false);
+        assert.deepStrictEqual(colLine.rowOfThreeXColumns, []);
+        assert.deepStrictEqual(rowLine.rowOfThreeXColumns, []);
+        assert.deepStrictEqual(diagLine.rowOfThreeXColumns, []);
+      })
+    })
+
+    describe('rowOfTwoX', () => {
+      it("is set to true if a row of two can be made in one move", () => {
+        const testboard = [
+          // ROW then COL
+          //  0    1    2    3    4    5    6
+            ['-', 'x', '-', '-', '-', '-', '-'], // 0  
+            ['-', '-', '-', '-', '-', '-', '-'], // 1  
+            ['-', '-', 'x', '-', '-', '-', '-'], // 2  
+            ['x', '-', '-', '-', '-', '-', '-'], // 3  
+            ['y', '-', '-', '-', '-', 'y', '-'], // 4  
+            ['y', '-', 'y', 'x', '-', '-', '-']  // 5  
+          ];
+        
+        const colLine = new Line('---xy', coordMaker('0010203040'), testboard);
+        const rowLine = new Line('yx---', coordMaker('5253545556'), testboard);
+        const diagLine = new Line('x---y', coordMaker('0112233445'), testboard);
+ 
+        assert.strictEqual(colLine.rowOfTwoX, true);
+        assert.strictEqual(rowLine.rowOfTwoX, true);
+        assert.strictEqual(diagLine.rowOfTwoX, true);
+        assert.deepStrictEqual(colLine.rowOfTwoXColumns, [0]);
+        assert.deepStrictEqual(rowLine.rowOfTwoXColumns, [4, 5, 6]);
+        assert.deepStrictEqual(diagLine.rowOfTwoXColumns, [2]);
+      })
+
+      it("is set to false is the conditions are not met", () => {
+        const testboard = [
+          // ROW then COL
+          //  0    1    2    3    4    5    6
+            ['-', 'x', '-', '-', '-', '-', '-'], // 0  
+            ['-', '-', '-', '-', '-', '-', '-'], // 1  
+            ['x', '-', '-', '-', '-', '-', '-'], // 2  
+            ['x', '-', '-', '-', '-', '-', '-'], // 3  
+            ['y', '-', '-', '-', '-', 'y', '-'], // 4  
+            ['y', '-', 'y', 'x', '-', '-', 'x']  // 5  
+          ];
+        
+        const colLine = new Line('--xxy', coordMaker('0010203040'), testboard);
+        const rowLine = new Line('yx--x', coordMaker('5253545556'), testboard);
+        const diagLine = new Line('x---y', coordMaker('0112233445'), testboard);
+ 
+        assert.strictEqual(colLine.rowOfTwoX, false);
+        assert.strictEqual(rowLine.rowOfTwoX, false);
+        assert.strictEqual(diagLine.rowOfTwoX, false);
+        assert.deepStrictEqual(colLine.rowOfTwoXColumns, []);
+        assert.deepStrictEqual(rowLine.rowOfTwoXColumns, []);
+        assert.deepStrictEqual(diagLine.rowOfTwoXColumns, []);
+      })       
+    })
+
+    describe('rowOfTwoY', () => {
+      it("is set to true if a row of two can be made in one move", () => {
+        const testboard = [
+          // ROW then COL
+          //  0    1    2    3    4    5    6
+            ['-', 'y', '-', '-', '-', '-', '-'], // 0  
+            ['-', '-', '-', '-', '-', '-', '-'], // 1  
+            ['-', '-', 'x', '-', '-', '-', '-'], // 2  
+            ['y', '-', '-', '-', '-', '-', '-'], // 3  
+            ['x', '-', '-', '-', '-', 'x', '-'], // 4  
+            ['y', '-', 'x', 'y', '-', '-', '-']  // 5  
+          ];
+        
+        const colLine = new Line('---yx', coordMaker('0010203040'), testboard);
+        const rowLine = new Line('xy---', coordMaker('5253545556'), testboard);
+        const diagLine = new Line('y---x', coordMaker('0112233445'), testboard);
+ 
+        assert.strictEqual(colLine.rowOfTwoY, true);
+        assert.strictEqual(rowLine.rowOfTwoY, true);
+        assert.strictEqual(diagLine.rowOfTwoY, true);
+        assert.deepStrictEqual(colLine.rowOfTwoYColumns, [0]);
+        assert.deepStrictEqual(rowLine.rowOfTwoYColumns, [4, 5, 6]);
+        assert.deepStrictEqual(diagLine.rowOfTwoYColumns, [2]);
+      })
+
+      it("is set to false is the conditions are not met", () => {
+        const testboard = [
+          // ROW then COL
+          //  0    1    2    3    4    5    6
+            ['-', 'y', '-', '-', '-', '-', '-'], // 0  
+            ['-', '-', '-', '-', '-', '-', '-'], // 1  
+            ['y', '-', '-', '-', '-', '-', '-'], // 2  
+            ['y', '-', '-', '-', '-', '-', '-'], // 3  
+            ['x', '-', '-', '-', '-', 'x', '-'], // 4  
+            ['y', '-', 'x', 'y', '-', '-', 'y']  // 5  
+          ];
+        
+        const colLine = new Line('--yyx', coordMaker('0010203040'), testboard);
+        const rowLine = new Line('xy--y', coordMaker('5253545556'), testboard);
+        const diagLine = new Line('y---x', coordMaker('0112233445'), testboard);
+ 
+        assert.strictEqual(colLine.rowOfTwoY, false);
+        assert.strictEqual(rowLine.rowOfTwoY, false);
+        assert.strictEqual(diagLine.rowOfTwoY, false);
+        assert.deepStrictEqual(colLine.rowOfTwoYColumns, []);
+        assert.deepStrictEqual(rowLine.rowOfTwoYColumns, []);
+        assert.deepStrictEqual(diagLine.rowOfTwoYColumns, []);
+      })       
     })
   })
 })
