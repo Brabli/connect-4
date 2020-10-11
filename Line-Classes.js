@@ -16,12 +16,12 @@ class Line {
     this.D = string[3];
     this.E = string[4];
     // Regexs
-    this.regexLineOfFourX = /.(-xxx|x-xx|xx-x|xxx-)|(-xxx|x-xx|xx-x|xxx-)./;
-    this.regexLineOfFourY = /.(-yyy|y-yy|yy-y|yyy-)|(-yyy|y-yy|yy-y|yyy-)./;
-    this.regexLineOfThreeX = /((xx-|x-x|-xx)-.)|(.-(xx-|x-x|-xx))|(y|-)(x-x-|x--x|-x-x|-xx-)|(x-x-|x--x|(-|y)x-x|(-|y)xx-)(y|-)/;
-    this.regexLineOfThreeY = /((yy-|y-y|-yy)-.)|(.-(yy-|y-y|-yy))|(x|-)(y-y-|y--y|-y-y|-yy-)|(y-y-|y--y|(-|x)y-y|(-|x)yy-)(x|-)/;
-    this.regexLineOfTwoX = /(--x-(y|-)|(y|-)-x--)|yx---|---xy|y---x|x---y/;
-    this.regexLineOfTwoY = /(--y-(x|-)|(x|-)-y--)|xy---|---yx|x---y|y---x/;
+    // this.regexLineOfFourX = /.(-xxx|x-xx|xx-x|xxx-)|(-xxx|x-xx|xx-x|xxx-)./;
+    // this.regexLineOfFourY = /.(-yyy|y-yy|yy-y|yyy-)|(-yyy|y-yy|yy-y|yyy-)./;
+    // this.regexLineOfThreeX = /((xx-|x-x|-xx)-.)|(.-(xx-|x-x|-xx))|(y|-)(x-x-|x--x|-x-x|-xx-)|(x-x-|x--x|(-|y)x-x|(-|y)xx-)(y|-)/;
+    // this.regexLineOfThreeY = /((yy-|y-y|-yy)-.)|(.-(yy-|y-y|-yy))|(x|-)(y-y-|y--y|-y-y|-yy-)|(y-y-|y--y|(-|x)y-y|(-|x)yy-)(x|-)/;
+    // this.regexLineOfTwoX = /(--x-(y|-)|(y|-)-x--)|yx---|---xy|y---x|x---y/;
+    // this.regexLineOfTwoY = /(--y-(x|-)|(x|-)-y--)|xy---|---yx|x---y|y---x/;
 
 
     /* emptyColumns: An array of numbers representing which columns are open in the line. Returns an empty array if none. */
@@ -62,7 +62,7 @@ class Line {
     /* rowOfFourX:  */
     this.rowOfFourX = false;
     this.winningColX;
-    if (this.string.match(this.regexLineOfFourX)) {
+    if (this.string.match(Line.regexLineOfFourX)) {
       for (let i = 0; i < 5; i++) {
         if (this.string[i] === "-" && (this.string[i+1] === "x" || this.string[i-1] === "x")) {
           if (this.movableColumns.includes(this.coords[i][1])) {
@@ -76,7 +76,7 @@ class Line {
     /* rowOfFourY:  */
     this.rowOfFourY = false;
     this.winningColY;
-    if (this.string.match(this.regexLineOfFourY)) {
+    if (this.string.match(Line.regexLineOfFourY)) {
       for (let i = 0; i < 5; i++) {
         if (this.string[i] === "-" && (this.string[i+1] === "y" || this.string[i-1] === "y")) {
           if (this.movableColumns.includes(this.coords[i][1])) {
@@ -107,7 +107,7 @@ class Line {
     /* rowOfThreeX:  */
     this.rowOfThreeX = false;
     this.rowOfThreeXColumns = [];
-    if (this.string.match(this.regexLineOfThreeX)) {
+    if (this.string.match(Line.regexLineOfThreeX)) {
       for (let i = 0; i < 5; i++) {
         if (this.string[i] === "-") {
           if(this.movableColumns.includes(this.coords[i][1])) {
@@ -122,7 +122,7 @@ class Line {
     /* rowOfThreeY:  */
     this.rowOfThreeY = false;
     this.rowOfThreeYColumns = [];
-    if (this.string.match(this.regexLineOfThreeY)) {
+    if (this.string.match(Line.regexLineOfThreeY)) {
       for (let i = 0; i < 5; i++) {
         if (this.string[i] === "-") {
           if(this.movableColumns.includes(this.coords[i][1])) {
@@ -137,7 +137,7 @@ class Line {
     /* rowOfTwoX:  */
     this.rowOfTwoX = false;
     this.rowOfTwoXColumns = [];
-    if (this.string.match(this.regexLineOfTwoX)) {
+    if (this.string.match(Line.regexLineOfTwoX)) {
       for (let i = 0; i < 5; i++) {
         if (this.string[i] === "-") {
           if(this.movableColumns.includes(this.coords[i][1])) {
@@ -152,7 +152,7 @@ class Line {
     /* rowOfTwoY:  */
     this.rowOfTwoY = false;
     this.rowOfTwoYColumns = [];
-    if (this.string.match(this.regexLineOfTwoY)) {
+    if (this.string.match(Line.regexLineOfTwoY)) {
       for (let i = 0; i < 5; i++) {
         if (this.string[i] === "-") {
           if(this.movableColumns.includes(this.coords[i][1])) {
@@ -164,6 +164,9 @@ class Line {
       this.rowOfTwoYColumns = [...new Set(this.rowOfTwoYColumns)];
     }
   }
+
+  // STATIC PROPERTIES //
+  
   /* Helper func used in this.emptyColumns */
   static getEmptyColumns(string, coords) {
     let emptyColumnIndicies = [];
@@ -173,6 +176,13 @@ class Line {
     }
     return [...new Set(emptyColumnIndicies)];
   }
+  // Regexs
+  static regexLineOfFourX = /.(-xxx|x-xx|xx-x|xxx-)|(-xxx|x-xx|xx-x|xxx-)./;
+  static regexLineOfFourY = /.(-yyy|y-yy|yy-y|yyy-)|(-yyy|y-yy|yy-y|yyy-)./;
+  static regexLineOfThreeX = /((xx-|x-x|-xx)-.)|(.-(xx-|x-x|-xx))|(y|-)(x-x-|x--x|-x-x|-xx-)|(x-x-|x--x|(-|y)x-x|(-|y)xx-)(y|-)/;
+  static regexLineOfThreeY = /((yy-|y-y|-yy)-.)|(.-(yy-|y-y|-yy))|(x|-)(y-y-|y--y|-y-y|-yy-)|(y-y-|y--y|(-|x)y-y|(-|x)yy-)(x|-)/;
+  static regexLineOfTwoX = /(--x-(y|-)|(y|-)-x--)|yx---|---xy|y---x|x---y/;
+  static regexLineOfTwoY = /(--y-(x|-)|(x|-)-y--)|xy---|---yx|x---y|y---x/;
 }
 
 module.exports = Line;

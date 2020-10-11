@@ -7,10 +7,23 @@ Array.prototype.count = function(element) {
 
 const board = new Board();
 
-board.move(0, 'x');
-board.move(0, 'y');
-board.move(0, 'x');
-board.move(0, 'y');
-board.scan();
+const player = "x";
+const computer = "y";
 
-board.show();
+
+board.move(0, 'x');
+board.move(0, 'y');
+board.move(0, 'x');
+board.move(4, 'y');
+board.move(4, 'x');
+board.move(3, 'y');
+board.move(3, 'x');
+board.move(0, 'y');
+board.move(2, 'x');
+board.move(1, 'y');
+//board.show();
+
+const lines = board.scan();
+const filteredLines = lines.filter(line => line.useful)
+console.log(filteredLines[5]);
+//.forEach(line => console.log(line));
