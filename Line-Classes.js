@@ -16,8 +16,8 @@ class Line {
     this.D = string[3];
     this.E = string[4];
     // Regexs
-    this.regexLineOfFourX = /(y|-)(-xxx|x-xx|xx-x|xxx-)|(-xxx|x-xx|xx-x|xxx-)(y|-)/;
-    this.regexLineOfFourY = /(x|-)(-yyy|y-yy|yy-y|yyy-)|(-yyy|y-yy|yy-y|yyy-)(x|-)/;
+    this.regexLineOfFourX = /.(-xxx|x-xx|xx-x|xxx-)|(-xxx|x-xx|xx-x|xxx-)./;
+    this.regexLineOfFourY = /.(-yyy|y-yy|yy-y|yyy-)|(-yyy|y-yy|yy-y|yyy-)./;
     this.regexLineOfThreeX = /((xx-|x-x|-xx)-.)|(.-(xx-|x-x|-xx))|(y|-)(x-x-|x--x|-x-x|-xx-)|(x-x-|x--x|(-|y)x-x|(-|y)xx-)(y|-)/;
     this.regexLineOfThreeY = /((yy-|y-y|-yy)-.)|(.-(yy-|y-y|-yy))|(x|-)(y-y-|y--y|-y-y|-yy-)|(y-y-|y--y|(-|x)y-y|(-|x)yy-)(x|-)/;
     this.regexLineOfTwoX = /(--x-(y|-)|(y|-)-x--)|yx---|---xy|y---x|x---y/;
@@ -59,10 +59,37 @@ class Line {
         this.movableColumns.push(currentSquareCoords[1]);
       }
     }
-
+    /* rowOfFourX:  */
     this.rowOfFourX = false;
+    this.winningColX;
+    if (this.string.match(this.regexLineOfFourX)) {
+      for (let i = 0; i < 5; i++) {
+        if (this.string[i] === "-" && (this.string[i+1] === "x" || this.string[i-1] === "x")) {
+          if (this.movableColumns.includes(this.coords[i][1])) {
+            this.rowOfFourX = true;
+            this.winningColX = this.coords[i][1];
+            break;
+          }
+        }
+      }
+    }
 
-    /* unblockableRowOfThreeX: -xXx- */
+
+    this.rowOfFourY = false;
+    this.winningColY;
+    if (this.string.match(this.regexLineOfFourY)) {
+      for (let i = 0; i < 5; i++) {
+        if (this.string[i] === "-" && (this.string[i+1] === "y" || this.string[i-1] === "y")) {
+          if (this.movableColumns.includes(this.coords[i][1])) {
+            this.rowOfFourY = true;
+            this.winningColY = this.coords[i][1];
+            break;
+          }
+        }
+      }
+    }
+
+    /* unblockableRowOfThreeX: -x-x- */
     this.unblockableRowOfThreeX = false;
     this.unblockableRowOfThreeXColumn;
     if (this.string === "-x-x-" && this.movableColumns.includes(this.coordC[1])) {
@@ -70,7 +97,7 @@ class Line {
       this.unblockableRowOfThreeXColumn = this.coordC[1];
     }
 
-    /* unblockableRowOfThreeY: -yYy- */
+    /* unblockableRowOfThreeY: -y-y- */
     this.unblockableRowOfThreeY = false;
     this.unblockableRowOfThreeYColumn;
     if (this.string === "-y-y-" && this.movableColumns.includes(this.coordC[1])) {
@@ -78,7 +105,6 @@ class Line {
       this.unblockableRowOfThreeYColumn = this.coordC[1];
     }
 
-    
     this.rowOfThreeX = false;
     this.rowOfThreeXColumns = [];
     if (this.string.match(this.regexLineOfThreeX)) {
@@ -124,7 +150,6 @@ class Line {
 
     this.rowOfTwoY = false;
     this.rowOfTwoYColumns = [];
-    
     if (this.string.match(this.regexLineOfTwoY)) {
       for (let i = 0; i < 5; i++) {
         if (this.string[i] === "-") {
@@ -136,20 +161,11 @@ class Line {
       }
       this.rowOfTwoYColumns = [...new Set(this.rowOfTwoYColumns)];
     }
-
-
-
-
-
-
-
-
   }
-
   // This will eventually be able to filter out certain line objects from an array of line objects
-  filter(arrayOfLines) {
-    return null;
-  }
+  // filter(arrayOfLines) {
+  //   return null;
+  // }
 }
 
 
@@ -160,10 +176,7 @@ const getEmptyColumns = (string, coords) => {
     if (string[i] !== '-') continue;
     emptyColumnIndicies.push(coords[i][1]);
   }
-  // Filters duplicates
-  emptyColumnIndicies = new Set(emptyColumnIndicies);
-  emptyColumnIndicies = Array.from(emptyColumnIndicies);
-  return emptyColumnIndicies;
+  return [...new Set(emptyColumnIndicies)];
 }
 
 module.exports = Line;
