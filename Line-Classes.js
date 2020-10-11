@@ -25,7 +25,7 @@ class Line {
 
 
     /* emptyColumns: An array of numbers representing which columns are open in the line. Returns an empty array if none. */
-    this.emptyColumns = getEmptyColumns(string, coords);
+    this.emptyColumns = Line.getEmptyColumns(string, coords);
     
     /* useful: True if line is not completely full nor completely empty. */
     this.useful = false;
@@ -73,8 +73,7 @@ class Line {
         }
       }
     }
-
-
+    /* rowOfFourY:  */
     this.rowOfFourY = false;
     this.winningColY;
     if (this.string.match(this.regexLineOfFourY)) {
@@ -105,6 +104,7 @@ class Line {
       this.unblockableRowOfThreeYColumn = this.coordC[1];
     }
 
+    /* rowOfThreeX:  */
     this.rowOfThreeX = false;
     this.rowOfThreeXColumns = [];
     if (this.string.match(this.regexLineOfThreeX)) {
@@ -119,6 +119,7 @@ class Line {
       this.rowOfThreeXColumns = [...new Set(this.rowOfThreeXColumns)];
     }
 
+    /* rowOfThreeY:  */
     this.rowOfThreeY = false;
     this.rowOfThreeYColumns = [];
     if (this.string.match(this.regexLineOfThreeY)) {
@@ -133,7 +134,7 @@ class Line {
       this.rowOfThreeYColumns = [...new Set(this.rowOfThreeYColumns)];
     }
 
-
+    /* rowOfTwoX:  */
     this.rowOfTwoX = false;
     this.rowOfTwoXColumns = [];
     if (this.string.match(this.regexLineOfTwoX)) {
@@ -148,6 +149,7 @@ class Line {
       this.rowOfTwoXColumns = [...new Set(this.rowOfTwoXColumns)];
     }
 
+    /* rowOfTwoY:  */
     this.rowOfTwoY = false;
     this.rowOfTwoYColumns = [];
     if (this.string.match(this.regexLineOfTwoY)) {
@@ -162,21 +164,15 @@ class Line {
       this.rowOfTwoYColumns = [...new Set(this.rowOfTwoYColumns)];
     }
   }
-  // This will eventually be able to filter out certain line objects from an array of line objects
-  // filter(arrayOfLines) {
-  //   return null;
-  // }
-}
-
-
-/* Helper Func */
-const getEmptyColumns = (string, coords) => {
-  let emptyColumnIndicies = [];
-  for (let i = 0; i < 5; i++) {
-    if (string[i] !== '-') continue;
-    emptyColumnIndicies.push(coords[i][1]);
+  /* Helper func used in this.emptyColumns */
+  static getEmptyColumns(string, coords) {
+    let emptyColumnIndicies = [];
+    for (let i = 0; i < 5; i++) {
+      if (string[i] !== '-') continue;
+      emptyColumnIndicies.push(coords[i][1]);
+    }
+    return [...new Set(emptyColumnIndicies)];
   }
-  return [...new Set(emptyColumnIndicies)];
 }
 
 module.exports = Line;

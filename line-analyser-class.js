@@ -1,0 +1,6 @@
+class LineAnalyser {
+  constructor() {
+
+  }
+  
+}
