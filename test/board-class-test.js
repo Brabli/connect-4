@@ -1,5 +1,5 @@
 const assert = require('assert');
-const Board = require('../board-class');
+const Board = require('../src/board-class');
 
 describe('Board Class', () => {
   describe('move', () => {

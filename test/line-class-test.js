@@ -1,6 +1,6 @@
 const assert = require('assert');
-const Line = require('../line-class');
-const coordMaker = require('../coord-maker');
+const Line = require('../src/line-class');
+const coordMaker = require('../src/coord-maker');
 
 describe('Line Class', () => {
   describe('Line', () => {

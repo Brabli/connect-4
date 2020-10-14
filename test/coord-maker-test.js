@@ -1,5 +1,5 @@
 const assert = require('assert');
-const coordMaker = require('../coord-maker');
+const coordMaker = require('../src/coord-maker');
 
 describe('Coord Maker', () => {
   it('returns an array of numbers from a ten digit string', () => {
