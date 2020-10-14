@@ -1,4 +1,4 @@
-const Line = require('./Line-Classes');
+const Line = require('./line-class');
 
 class Board {
   constructor() {

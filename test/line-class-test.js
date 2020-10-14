@@ -1,8 +1,6 @@
 const assert = require('assert');
-const Line = require('../Line-Classes');
+const Line = require('../line-class');
 const coordMaker = require('../coord-maker');
-const Board = require('../board-class');
-// const { isString } = require('util'); // What was this for?
 
 describe('Line Class', () => {
   describe('Line', () => {

@@ -12,7 +12,7 @@ const computer = "y";
 
 
 board.move(0, 'x');
-board.move(0, 'y');
+board.move(0, 'y');``
 board.move(0, 'x');
 board.move(4, 'y');
 board.move(4, 'x');
