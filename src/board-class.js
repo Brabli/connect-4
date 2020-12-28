@@ -1,5 +1,5 @@
 const Line = require('./line-class');
-
+// TODO Write tests for all these functions!
 class Board {
   constructor() {
     this.board = [

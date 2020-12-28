@@ -15,14 +15,6 @@ class Line {
     this.C = string[2];
     this.D = string[3];
     this.E = string[4];
-    // Regexs
-    // this.regexLineOfFourX = /.(-xxx|x-xx|xx-x|xxx-)|(-xxx|x-xx|xx-x|xxx-)./;
-    // this.regexLineOfFourY = /.(-yyy|y-yy|yy-y|yyy-)|(-yyy|y-yy|yy-y|yyy-)./;
-    // this.regexLineOfThreeX = /((xx-|x-x|-xx)-.)|(.-(xx-|x-x|-xx))|(y|-)(x-x-|x--x|-x-x|-xx-)|(x-x-|x--x|(-|y)x-x|(-|y)xx-)(y|-)/;
-    // this.regexLineOfThreeY = /((yy-|y-y|-yy)-.)|(.-(yy-|y-y|-yy))|(x|-)(y-y-|y--y|-y-y|-yy-)|(y-y-|y--y|(-|x)y-y|(-|x)yy-)(x|-)/;
-    // this.regexLineOfTwoX = /(--x-(y|-)|(y|-)-x--)|yx---|---xy|y---x|x---y/;
-    // this.regexLineOfTwoY = /(--y-(x|-)|(x|-)-y--)|xy---|---yx|x---y|y---x/;
-
 
     /* emptyColumns: An array of numbers representing which columns are open in the line. Returns an empty array if none. */
     this.emptyColumns = Line.getEmptyColumns(string, coords);
@@ -91,17 +83,23 @@ class Line {
     /* unblockableRowOfThreeX: -x-x- */
     this.unblockableRowOfThreeX = false;
     this.unblockableRowOfThreeXColumn;
-    if (this.string === "-x-x-" && this.movableColumns.includes(this.coordC[1])) {
-      this.unblockableRowOfThreeX = true;
-      this.unblockableRowOfThreeXColumn = this.coordC[1];
+    if (this.string === "-x-x-")  {
+      const emptySquares = [this.coordA[1], this.coordC[1], this.coordE[1]];
+      if (emptySquares.every(square => this.movableColumns.includes(square))) {
+        this.unblockableRowOfThreeX = true;
+        this.unblockableRowOfThreeXColumn = this.coordC[1];
+      }
     }
 
     /* unblockableRowOfThreeY: -y-y- */
     this.unblockableRowOfThreeY = false;
     this.unblockableRowOfThreeYColumn;
-    if (this.string === "-y-y-" && this.movableColumns.includes(this.coordC[1])) {
-      this.unblockableRowOfThreeY = true;
-      this.unblockableRowOfThreeYColumn = this.coordC[1];
+    if (this.string === "-y-y-") {
+      const emptySquares = [this.coordA[1], this.coordC[1], this.coordE[1]];
+      if (emptySquares.every(square => this.movableColumns.includes(square))) {
+        this.unblockableRowOfThreeY = true;
+        this.unblockableRowOfThreeYColumn = this.coordC[1];
+      }
     }
 
     /* rowOfThreeX:  */
@@ -166,7 +164,6 @@ class Line {
   }
 
   // STATIC PROPERTIES //
-  
   /* Helper func used in this.emptyColumns */
   static getEmptyColumns(string, coords) {
     let emptyColumnIndicies = [];
@@ -176,6 +173,7 @@ class Line {
     }
     return [...new Set(emptyColumnIndicies)];
   }
+
   // Regexs
   static regexLineOfFourX = /.(-xxx|x-xx|xx-x|xxx-)|(-xxx|x-xx|xx-x|xxx-)./;
   static regexLineOfFourY = /.(-yyy|y-yy|yy-y|yyy-)|(-yyy|y-yy|yy-y|yyy-)./;
