@@ -2,9 +2,9 @@ const assert = require('assert');
 const Board = require('../src/board-class');
 
 describe('Board Class', () => {
-  describe('move', () => {
+  describe('.move()', () => {
     it('returns true if it makes a move', () => {
-      board = new Board();
+      const board = new Board();
       for (let i = 0; i < 5; i++) {
         board.move(0, 'x');
       }
@@ -12,7 +12,7 @@ describe('Board Class', () => {
     })
 
     it('returns false if it tries to move to a full column', () => {
-      board = new Board();
+      const board = new Board();
       for (let i = 0; i < 6; i++) {
         board.move(0, 'x');
       }
@@ -58,6 +58,39 @@ describe('Board Class', () => {
       assert.deepStrictEqual(clone.board, board.board);
       clone.move(0, 'x');
       assert.notDeepStrictEqual(clone.board, board.board);
+    })
+  })
+
+  describe(".get()", () => {
+    it("returns the symbol located at the XY coordinate of the current board", () => {
+      const board = new Board();
+
+      board.move(0, 'x');
+      board.move(1, 'y');
+      board.move(2, 'y');
+
+      const shouldBeX = board.get(5, 0);
+      const shouldBeHyphen = board.get(0, 0);
+      const shouldBeY = board.get(5, 1);
+      
+      assert.strictEqual(shouldBeX, "x");
+      assert.strictEqual(shouldBeHyphen, "-");
+      assert.strictEqual(shouldBeY, "y");
+    })
+  })
+
+  describe(".set()", () => {
+    it("sets the XY coordinate to the given symbol", () => {
+      const board = new Board();
+
+      board.set(0, 5, "x");
+      board.set(4, 1, "y");
+      
+      const x = board.get(0, 5);
+      const y = board.get(4, 1);
+
+      assert.strictEqual(x, "x");
+      assert.strictEqual(y, "y");
     })
   })
 })

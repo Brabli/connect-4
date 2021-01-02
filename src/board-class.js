@@ -15,24 +15,20 @@ class Board {
   }
 
   move(column, symbol) {
-    // Returns false if specified column is full
-    if (this.board[0][column] !== '-') {
+    // Returns false if specified column is full.
+    if (this.get(0, column) !== '-') {
       console.log(`Column ${column} is full!`);
       return false;
     }
-    // Checks bottom row for empty space
-    if (this.board[5][column] === '-') {
-      this.board[5][column] = symbol;
-      return true;
-    }
-    // Finds appropriate empty space
-    for (let i = 4; i >= 0; i--) {
-      if (this.board[i][column] === '-') {
-        this.board[i][column] = symbol;
+    // Otherwise move and return true.
+    for (let i = 5; i >= 0; i--) {
+      if (this.get(i, column) === '-') {
+        this.set(i, column, symbol);
         return true;
       }
     }
   }
+  
   // Scans board creating an array of lines. If bool is true, console.log each line.
   scan(bool = false) {
     let rows = [], cols = [], diags = [];
@@ -60,7 +56,7 @@ class Board {
     // DIAGS BACK
     for (let r = 0; r < 2; r++) {
       for (let c = 0; c < 3; c++) {
-        lineString = this.board[r][c]+ this.board[r + 1][c + 1] + this.board[r + 2][c + 2] + this.board[r + 3][c + 3] + this.board[r + 4][c + 4];;
+        lineString = this.board[r][c]+ this.board[r + 1][c + 1] + this.board[r + 2][c + 2] + this.board[r + 3][c + 3] + this.board[r + 4][c + 4];
         lineCoords = [[r, c], [r + 1, c + 1], [r + 2, c + 2], [r + 3, c + 3], [r + 4, c + 4]];
         const line = new Line(lineString, lineCoords, this.board);
         if (bool) console.log(line);
@@ -88,12 +84,20 @@ class Board {
 
   show() {
     this.board.forEach(row => console.log(JSON.stringify(row)));
-  };
+  }
 
   clone() {
     const clone = new Board();
     clone.board = JSON.parse(JSON.stringify(this.board));
     return clone;
+  }
+
+  get(row, col) {
+    return this.board[row][col];
+  }
+  
+  set(row, col, symbol) {
+    this.board[row][col] = symbol;
   }
 }
   
