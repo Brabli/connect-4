@@ -21,4 +21,4 @@ const coordMaker = nums => {
   return coords;
 }
 
-module.exports = coordMaker
+module.exports = coordMaker;

@@ -23,7 +23,7 @@ board.move(2, 'x');
 board.move(1, 'y');
 //board.show();
 
-const lines = board.scan();
+const lines = board.scan(true);
 const filteredLines = lines.filter(line => line.useful)
 console.log(filteredLines[5]);
 //.forEach(line => console.log(line));

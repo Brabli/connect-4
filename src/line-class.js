@@ -175,6 +175,7 @@ class Line {
   }
 
   // Regexs
+  //static customLO4 = new RegExp(`.(${"-" + s + s + s}|${s + "-" + s + s}|${s + s + "-" + s}|${s + s + s + "-"})|(${"-" + s + s + s}|${s + "-" + s + s}|${s + s + "-" + s}|${s + s + s + "-"}).`)
   static regexLineOfFourX = /.(-xxx|x-xx|xx-x|xxx-)|(-xxx|x-xx|xx-x|xxx-)./;
   static regexLineOfFourY = /.(-yyy|y-yy|yy-y|yyy-)|(-yyy|y-yy|yy-y|yyy-)./;
   static regexLineOfThreeX = /((xx-|x-x|-xx)-.)|(.-(xx-|x-x|-xx))|(y|-)(x-x-|x--x|-x-x|-xx-)|(x-x-|x--x|(-|y)x-x|(-|y)xx-)(y|-)/;
