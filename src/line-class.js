@@ -1,181 +1,134 @@
 // Coords are always ROW then COL.
 class Line { 
-  constructor(string, coords, gameboard) {
+  constructor(string, coords, board) {
+    this.board = board;
     this.string = string;
     this.coords = coords;
-    // Refers to specific coords
-    this.coordA = coords[0];
-    this.coordB = coords[1];
-    this.coordC = coords[2];
-    this.coordD = coords[3];
-    this.coordE = coords[4];
-    // Refers to specific string characters
-    this.A = string[0];
-    this.B = string[1];
-    this.C = string[2];
-    this.D = string[3];
-    this.E = string[4];
 
-    /* emptyColumns: An array of numbers representing which columns are open in the line. Returns an empty array if none. */
-    this.emptyColumns = Line.getEmptyColumns(string, coords);
+    // emptyColumns: An array of numbers representing which columns are open in the line. Returns an empty array if none.
+    this.emptyColumns = getEmptyColumns(string, coords);
     
-    /* useful: True if line is not completely full nor completely empty. */
-    this.useful = false;
-    if (!this.string.match(/(\w\w\w\w\w)|(-----)/)) this.useful = true;
+    // useful: True if line is not completely full nor completely empty.
+    this.useful = !(this.string.match(/(\w\w\w\w\w)|(-----)/));
 
-    /* winning: True if string is 4 of the same characters in a row that aren't '----' */
+    // winning: True if string is 4 of the same characters in a row that aren't '----'.
+    this.winningX = this.string.match(/xxxx/);
+    this.winningY = this.string.match(/yyyy/);
 
-    this.winningX = false;
-    if (this.string.match(/xxxx/)) this.winningX = true;
+    // movable: True if any blank spaces can be immidiately moved to, false otherwise.
+    this.movable = getMovableColumns(this.string, this.coords, this.board).length !== 0;
+    this.movableColumns = getMovableColumns(this.string, this.coords, this.board);
 
-    this.winningY = false;
-    if (this.string.match(/yyyy/)) this.winningY = true;
+    // rowOfFourX: True if a winning move can be made
+    this.rowOfFourX = testForLineOfFour("x", this.string, this.coords, this.movableColumns) !== null;
+    this.winningColX = testForLineOfFour("x", this.string, this.coords, this.movableColumns);
 
-    /* movable: True if any blank spaces can be immidiately moved to, false otherwise. */
-    this.movable = false;
-    this.movableColumns = [];
-    // Loops once for each Line.string index
-    for (let i = 0; i < 5; i++) {
-      // If no gameboard provided, break loop. If current stringIndex is not "-", skip iter.
-      if (!gameboard) break;
-      if (this.string[i] !== '-') continue;
-      let currentSquareCoords = this.coords[i];
-      let underSquareCoords = [currentSquareCoords[0] + 1, currentSquareCoords[1]];
-      if (currentSquareCoords[0] === 5) {
-        this.movable = true;
-        this.movableColumns.push(currentSquareCoords[1]);
-        continue;
-      }
-      if (gameboard[underSquareCoords[0]][underSquareCoords[1]] !== '-') {
-        this.movable = true;
-        this.movableColumns.push(currentSquareCoords[1]);
-      }
-    }
-    /* rowOfFourX:  */
-    this.rowOfFourX = false;
-    this.winningColX;
-    if (this.string.match(Line.regexLineOfFourX)) {
+    this.rowOfFourY = testForLineOfFour("y", this.string, this.coords, this.movableColumns) !== null;
+    this.winningColY = testForLineOfFour("y", this.string, this.coords, this.movableColumns);
+    
+    this.unblockableRowOfThreeX = testForUnblockableRowOfThree("x", this.string, this.coords, this.movableColumns) !== null;
+    this.unblockableRowOfThreeXColumn = testForUnblockableRowOfThree("x", this.string, this.coords, this.movableColumns);
+
+    this.unblockableRowOfThreeY = testForUnblockableRowOfThree("y", this.string, this.coords, this.movableColumns) !== null;
+    this.unblockableRowOfThreeYColumn = testForUnblockableRowOfThree("y", this.string, this.coords, this.movableColumns);
+
+    this.rowOfThreeX = testForRowOfThree("x", this.string, this.coords, this.movableColumns).length !== 0;
+    this.rowOfThreeXColumns = testForRowOfThree("x", this.string, this.coords, this.movableColumns); // Columns that can be moved to to form a row of three x's.
+
+    this.rowOfThreeY = testForRowOfThree("y", this.string, this.coords, this.movableColumns).length !== 0;
+    this.rowOfThreeYColumns = testForRowOfThree("y", this.string, this.coords, this.movableColumns);
+
+    this.rowOfTwoX = testForRowOfTwo("x", this.string, this.coords, this.movableColumns).length !== 0;
+    this.rowOfTwoXColumns = testForRowOfTwo("x", this.string, this.coords, this.movableColumns);
+
+    this.rowOfTwoY = testForRowOfTwo("y", this.string, this.coords, this.movableColumns).length !== 0;
+    this.rowOfTwoYColumns = testForRowOfTwo("y", this.string, this.coords, this.movableColumns);
+
+    function getMovableColumns(lineString, coords, board) {
+      const movableColumns = [];
       for (let i = 0; i < 5; i++) {
-        if (this.string[i] === "-" && (this.string[i+1] === "x" || this.string[i-1] === "x")) {
-          if (this.movableColumns.includes(this.coords[i][1])) {
-            this.rowOfFourX = true;
-            this.winningColX = this.coords[i][1];
-            break;
+        let [currentRow, currentCol] = coords[i];
+        if (lineString[i] !== '-') continue;
+        if (currentRow === 5) {
+          movableColumns.push(currentCol);
+          continue;
+        }
+        // currentRow + 1 is the column space underneath the current space.
+        if (board.get(currentRow + 1, currentCol) !== '-') movableColumns.push(currentCol);
+      }
+      return movableColumns;
+    }
+    
+    function testForLineOfFour(s, lineString, coords, movableColumns) {
+      let regex;
+      if (s === "x") regex = Line.regexLineOfFourX;
+      if (s === "y") regex = Line.regexLineOfFourY;
+      if (string.match(regex)) {
+        for (let i = 0; i < 5; i++) {
+          if (lineString[i] === "-" && (lineString[i + 1] === s || lineString[i - 1] === s)) {
+            if (movableColumns.includes(coords[i][1])) {
+              return [coords[i][1]];
+            }
           }
         }
       }
-    }
-    /* rowOfFourY:  */
-    this.rowOfFourY = false;
-    this.winningColY;
-    if (this.string.match(Line.regexLineOfFourY)) {
-      for (let i = 0; i < 5; i++) {
-        if (this.string[i] === "-" && (this.string[i+1] === "y" || this.string[i-1] === "y")) {
-          if (this.movableColumns.includes(this.coords[i][1])) {
-            this.rowOfFourY = true;
-            this.winningColY = this.coords[i][1];
-            break;
-          }
-        }
-      }
+      return null;
     }
 
     /* unblockableRowOfThreeX: -x-x- */
-    this.unblockableRowOfThreeX = false;
-    this.unblockableRowOfThreeXColumn;
-    if (this.string === "-x-x-")  {
-      const emptySquares = [this.coordA[1], this.coordC[1], this.coordE[1]];
-      if (emptySquares.every(square => this.movableColumns.includes(square))) {
-        this.unblockableRowOfThreeX = true;
-        this.unblockableRowOfThreeXColumn = this.coordC[1];
+    function testForUnblockableRowOfThree(s, lineString, coords, movableColumns) {
+      if (lineString === "-" + s + "-" + s + "-") {
+        const emptySquares = [coords[0][1], coords[2][1], coords[4][1]];
+        if (emptySquares.every(square => movableColumns.includes(square))) return [coords[2][1]];
+        else return null;
       }
     }
-
-    /* unblockableRowOfThreeY: -y-y- */
-    this.unblockableRowOfThreeY = false;
-    this.unblockableRowOfThreeYColumn;
-    if (this.string === "-y-y-") {
-      const emptySquares = [this.coordA[1], this.coordC[1], this.coordE[1]];
-      if (emptySquares.every(square => this.movableColumns.includes(square))) {
-        this.unblockableRowOfThreeY = true;
-        this.unblockableRowOfThreeYColumn = this.coordC[1];
-      }
-    }
-
-    /* rowOfThreeX:  */
-    this.rowOfThreeX = false;
-    this.rowOfThreeXColumns = [];
-    if (this.string.match(Line.regexLineOfThreeX)) {
-      for (let i = 0; i < 5; i++) {
-        if (this.string[i] === "-") {
-          if(this.movableColumns.includes(this.coords[i][1])) {
-            this.rowOfThreeX = true;
-            this.rowOfThreeXColumns.push(this.coords[i][1]);
+    
+    function testForRowOfThree(s, lineString, coords, movableColumns) {
+      let regex;
+      const rowOfThreeCols = [];
+      if (s === "x") regex = Line.regexLineOfThreeX;
+      if (s === "y") regex = Line.regexLineOfThreeY;
+      /* rowOfThreeX:  */
+      if (lineString.match(regex)) {
+        for (let i = 0; i < 5; i++) {
+          if (lineString[i] === "-") {
+            if (movableColumns.includes(coords[i][1])) {
+              rowOfThreeCols.push(coords[i][1]);
+            }
           }
         }
       }
-      this.rowOfThreeXColumns = [...new Set(this.rowOfThreeXColumns)];
+      return [...new Set(rowOfThreeCols)];
     }
 
-    /* rowOfThreeY:  */
-    this.rowOfThreeY = false;
-    this.rowOfThreeYColumns = [];
-    if (this.string.match(Line.regexLineOfThreeY)) {
-      for (let i = 0; i < 5; i++) {
-        if (this.string[i] === "-") {
-          if(this.movableColumns.includes(this.coords[i][1])) {
-            this.rowOfThreeY = true;
-            this.rowOfThreeYColumns.push(this.coords[i][1]);
+    function testForRowOfTwo(s, lineString, coords, movableColumns) {
+      let regex;
+      const rowOfTwoCols = [];
+      if (s === "x") regex = Line.regexLineOfTwoX;
+      if (s === "y") regex = Line.regexLineOfTwoY;
+      if (lineString.match(regex)) {
+        for (let i = 0; i < 5; i++) {
+          if (lineString[i] === "-") {
+            if(movableColumns.includes(coords[i][1])) {
+              rowOfTwoCols.push(coords[i][1]);
+            }
           }
         }
       }
-      this.rowOfThreeYColumns = [...new Set(this.rowOfThreeYColumns)];
+      return [...new Set(rowOfTwoCols)];
     }
 
-    /* rowOfTwoX:  */
-    this.rowOfTwoX = false;
-    this.rowOfTwoXColumns = [];
-    if (this.string.match(Line.regexLineOfTwoX)) {
+    function getEmptyColumns(string, coords) {
+      let emptyColumnIndicies = [];
       for (let i = 0; i < 5; i++) {
-        if (this.string[i] === "-") {
-          if(this.movableColumns.includes(this.coords[i][1])) {
-            this.rowOfTwoX = true;
-            this.rowOfTwoXColumns.push(this.coords[i][1]);
-          }
-        }
+        if (string[i] !== '-') continue;
+        emptyColumnIndicies.push(coords[i][1]);
       }
-      this.rowOfTwoXColumns = [...new Set(this.rowOfTwoXColumns)];
-    }
-
-    /* rowOfTwoY:  */
-    this.rowOfTwoY = false;
-    this.rowOfTwoYColumns = [];
-    if (this.string.match(Line.regexLineOfTwoY)) {
-      for (let i = 0; i < 5; i++) {
-        if (this.string[i] === "-") {
-          if(this.movableColumns.includes(this.coords[i][1])) {
-            this.rowOfTwoY = true;
-            this.rowOfTwoYColumns.push(this.coords[i][1]);
-          }
-        }
-      }
-      this.rowOfTwoYColumns = [...new Set(this.rowOfTwoYColumns)];
+      return [...new Set(emptyColumnIndicies)];
     }
   }
 
-  // STATIC PROPERTIES //
-  /* Helper func used in this.emptyColumns */
-  static getEmptyColumns(string, coords) {
-    let emptyColumnIndicies = [];
-    for (let i = 0; i < 5; i++) {
-      if (string[i] !== '-') continue;
-      emptyColumnIndicies.push(coords[i][1]);
-    }
-    return [...new Set(emptyColumnIndicies)];
-  }
-
-  // Regexs
-  //static customLO4 = new RegExp(`.(${"-" + s + s + s}|${s + "-" + s + s}|${s + s + "-" + s}|${s + s + s + "-"})|(${"-" + s + s + s}|${s + "-" + s + s}|${s + s + "-" + s}|${s + s + s + "-"}).`)
   static regexLineOfFourX = /.(-xxx|x-xx|xx-x|xxx-)|(-xxx|x-xx|xx-x|xxx-)./;
   static regexLineOfFourY = /.(-yyy|y-yy|yy-y|yyy-)|(-yyy|y-yy|yy-y|yyy-)./;
   static regexLineOfThreeX = /((xx-|x-x|-xx)-.)|(.-(xx-|x-x|-xx))|(y|-)(x-x-|x--x|-x-x|-xx-)|(x-x-|x--x|(-|y)x-x|(-|y)xx-)(y|-)/;
