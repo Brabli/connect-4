@@ -11,21 +11,22 @@ class Line {
     // useful: True if line is not completely full nor completely empty.
     this.useful = !(this.string.match(/(\w\w\w\w\w)|(-----)/));
 
-    // winning: True if string is 4 of the same characters in a row that aren't '----'.
-    this.winningX = this.string.match(/xxxx/);
-    this.winningY = this.string.match(/yyyy/);
-
     // movable: True if any blank spaces can be immidiately moved to, false otherwise.
     this.movable = getMovableColumns(this.string, this.coords, this.board).length !== 0;
     this.movableColumns = getMovableColumns(this.string, this.coords, this.board);
 
-    // rowOfFourX: True if a winning move can be made
+    // winning: True if string is 4 of the same characters in a row that aren't '----'.
+    this.winningX = this.string.match(/xxxx/);
+    this.winningY = this.string.match(/yyyy/);
+
+    // rowOfFour: True if a winning move can be made
     this.rowOfFourX = testForLineOfFour("x", this.string, this.coords, this.movableColumns) !== null;
     this.winningColX = testForLineOfFour("x", this.string, this.coords, this.movableColumns);
 
     this.rowOfFourY = testForLineOfFour("y", this.string, this.coords, this.movableColumns) !== null;
     this.winningColY = testForLineOfFour("y", this.string, this.coords, this.movableColumns);
     
+    // unblockableRowOfThree:
     this.unblockableRowOfThreeX = testForUnblockableRowOfThree("x", this.string, this.coords, this.movableColumns) !== null;
     this.unblockableRowOfThreeXColumn = testForUnblockableRowOfThree("x", this.string, this.coords, this.movableColumns);
 
