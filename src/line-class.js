@@ -11,8 +11,7 @@ class Line {
     // useful: True if line is not completely full nor completely empty.
     this.useful = !(this.string.match(/(\w\w\w\w\w)|(-----)/));
 
-    // movable: True if any blank spaces can be immidiately moved to, false otherwise.
-    this.movable = getMovableColumns(this.string, this.coords, this.board).length !== 0;
+    // Columns that are not full, meaning a move can be made to them.
     this.movableColumns = getMovableColumns(this.string, this.coords, this.board);
 
     // winning: True if string is 4 of the same characters in a row that aren't '----'.
@@ -20,29 +19,19 @@ class Line {
     this.winningY = this.string.match(/yyyy/);
 
     // rowOfFour: True if a winning move can be made
-    this.rowOfFourX = testForLineOfFour("x", this.string, this.coords, this.movableColumns) !== null;
     this.winningColX = testForLineOfFour("x", this.string, this.coords, this.movableColumns);
-
-    this.rowOfFourY = testForLineOfFour("y", this.string, this.coords, this.movableColumns) !== null;
     this.winningColY = testForLineOfFour("y", this.string, this.coords, this.movableColumns);
     
-    // unblockableRowOfThree:
-    this.unblockableRowOfThreeX = testForUnblockableRowOfThree("x", this.string, this.coords, this.movableColumns) !== null;
+    // Columns that can be moved to to create an unblockable row of three, meaning victory on the next move.
     this.unblockableRowOfThreeXColumn = testForUnblockableRowOfThree("x", this.string, this.coords, this.movableColumns);
-
-    this.unblockableRowOfThreeY = testForUnblockableRowOfThree("y", this.string, this.coords, this.movableColumns) !== null;
     this.unblockableRowOfThreeYColumn = testForUnblockableRowOfThree("y", this.string, this.coords, this.movableColumns);
 
-    this.rowOfThreeX = testForRowOfThree("x", this.string, this.coords, this.movableColumns).length !== 0;
-    this.rowOfThreeXColumns = testForRowOfThree("x", this.string, this.coords, this.movableColumns); // Columns that can be moved to to form a row of three x's.
-
-    this.rowOfThreeY = testForRowOfThree("y", this.string, this.coords, this.movableColumns).length !== 0;
+    // Columns that can be moved to to form a row of three x's.
+    this.rowOfThreeXColumns = testForRowOfThree("x", this.string, this.coords, this.movableColumns);
     this.rowOfThreeYColumns = testForRowOfThree("y", this.string, this.coords, this.movableColumns);
 
-    this.rowOfTwoX = testForRowOfTwo("x", this.string, this.coords, this.movableColumns).length !== 0;
+    // Columns that can be moved to to create a row of two x's.
     this.rowOfTwoXColumns = testForRowOfTwo("x", this.string, this.coords, this.movableColumns);
-
-    this.rowOfTwoY = testForRowOfTwo("y", this.string, this.coords, this.movableColumns).length !== 0;
     this.rowOfTwoYColumns = testForRowOfTwo("y", this.string, this.coords, this.movableColumns);
 
     function getMovableColumns(lineString, coords, board) {
