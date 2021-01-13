@@ -1,4 +1,5 @@
 const coordMaker = nums => {
+  if (nums == undefined) return coordMaker("0001020304");
   if (typeof nums !== 'string') throw new TypeError('Digits must be a string!')
   if (nums.length !== 10) throw new RangeError("Input must be ten digits long!");
 

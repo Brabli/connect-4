@@ -30,7 +30,7 @@ describe('Coord Maker', () => {
 
   it('raises an error if type of argument is not a string', () => {
     const notAString = 1234567898;
-    const alsoNotAString = undefined;
+    const alsoNotAString = true;
 
     assert.throws(() => {coordMaker(notAString)}, TypeError);
     assert.throws(() => {coordMaker(alsoNotAString)}, TypeError);
@@ -40,5 +40,11 @@ describe('Coord Maker', () => {
     const incorrectString = "123A56B898";
 
     assert.throws(() => {coordMaker(incorrectString)}, TypeError);
+  })
+
+  it('sets default coordinates if no argument is provided', () => {
+    const coords = coordMaker();
+    const expectedOutput = [[0, 0], [0, 1], [0, 2], [0, 3], [0, 4]];
+    assert.deepStrictEqual(coords, expectedOutput)
   })
 })
