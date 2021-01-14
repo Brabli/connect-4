@@ -44,7 +44,7 @@ describe('Coord Maker', () => {
 
   it('sets default coordinates if no argument is provided', () => {
     const coords = coordMaker();
-    const expectedOutput = [[0, 0], [0, 1], [0, 2], [0, 3], [0, 4]];
+    const expectedOutput = [[5, 0], [5, 1], [5, 2], [5, 3], [5, 4]];
     assert.deepStrictEqual(coords, expectedOutput)
   })
 })
