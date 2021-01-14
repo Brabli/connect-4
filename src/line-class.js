@@ -5,11 +5,11 @@ class Line {
     this.string = string;
     this.coords = coords;
 
-    // emptyColumns: An array of numbers representing which columns are open in the line. Returns an empty array if none.
-    this.emptyColumns = getEmptyColumns(string, coords);
-    
     // useful: True if line is not completely full nor completely empty.
     this.useful = !(this.string.match(/(\w\w\w\w\w)|(-----)/));
+
+    // emptyColumns: An array of numbers representing which columns are open in the line. Returns an empty array if none.
+    this.emptyColumns = getEmptyColumns(string, coords);
 
     // Columns that are not full, meaning a move can be made to them.
     this.movableColumns = getMovableColumns(this.string, this.coords, this.board);
@@ -62,7 +62,7 @@ class Line {
           }
         }
       }
-      return null;
+      return [];
     }
 
     /* unblockableRowOfThreeX: -x-x- */
@@ -70,8 +70,8 @@ class Line {
       if (lineString === "-" + s + "-" + s + "-") {
         const emptySquares = [coords[0][1], coords[2][1], coords[4][1]];
         if (emptySquares.every(square => movableColumns.includes(square))) return [coords[2][1]];
-        else return null;
       }
+      return [];
     }
     
     function testForRowOfThree(s, lineString, coords, movableColumns) {
@@ -123,8 +123,8 @@ class Line {
   static regexLineOfFourY = /.(-yyy|y-yy|yy-y|yyy-)|(-yyy|y-yy|yy-y|yyy-)./;
   static regexLineOfThreeX = /((xx-|x-x|-xx)-.)|(.-(xx-|x-x|-xx))|(y|-)(x-x-|x--x|-x-x|-xx-)|(x-x-|x--x|(-|y)x-x|(-|y)xx-)(y|-)/;
   static regexLineOfThreeY = /((yy-|y-y|-yy)-.)|(.-(yy-|y-y|-yy))|(x|-)(y-y-|y--y|-y-y|-yy-)|(y-y-|y--y|(-|x)y-y|(-|x)yy-)(x|-)/;
-  static regexLineOfTwoX = /(--x-(y|-)|(y|-)-x--)|yx---|---xy|y---x|x---y/;
-  static regexLineOfTwoY = /(--y-(x|-)|(x|-)-y--)|xy---|---yx|x---y|y---x/;
+  static regexLineOfTwoX = /(--x-(y|-)|(y|-)-x--)|yx---|---xy|y---x|x---(y|-)|(y|-)---x/;
+  static regexLineOfTwoY = /(--y-(x|-)|(x|-)-y--)|xy---|---yx|x---y|y---(x|-)|(x|-)---y/;
 }
-
+//    /(--x-(y|-)|(y|-)-x--)|yx---|---xy|y---x|x---y/; Pre edit, row of 2 X
 module.exports = Line;
