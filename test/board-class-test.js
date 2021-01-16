@@ -3,12 +3,11 @@ const Board = require('../src/board-class');
 
 describe('Board Class', () => {
   describe('.move()', () => {
-    it('returns true if it makes a move', () => {
+    it('returns the current board object if it makes a move', () => {
       const board = new Board();
-      for (let i = 0; i < 5; i++) {
-        board.move(0, 'x');
-      }
-      assert.ok(board.move(0, 'x'));
+      const actualOutput = board.move(0, "x")
+      const expectedOutput = board;
+      assert.strictEqual(actualOutput, expectedOutput);
     })
 
     it('returns false if it tries to move to a full column', () => {
@@ -92,5 +91,71 @@ describe('Board Class', () => {
       assert.strictEqual(x, "x");
       assert.strictEqual(y, "y");
     })
+
+    it("returns the current board object", () => {
+      const board = new Board();
+
+      const actualOutput = board.set(0, 0, "x");
+      const expectedOutput = board;
+      assert.strictEqual(actualOutput, expectedOutput);
+    })
   })
+
+  describe("_checkForWinner()", () => {
+    it("returns 'x' if a row of four for x is found", () => {
+      const winningBoard = new Board();
+      winningBoard.move(0, "x").move(1, "x").move(2, "x").move(3, "x");
+
+      const actualOutput = winningBoard._checkForWinner();
+      const expectedOutput = "x";
+      assert.strictEqual(actualOutput, expectedOutput);
+    })
+    
+    it("returns 'y' if a row of four for x is found", () => {
+      const winningBoard = new Board();
+      winningBoard.move(0, "y").move(0, "y").move(0, "y").move(0, "y");
+      
+      const actualOutput = winningBoard._checkForWinner();
+      const expectedOutput = "y";
+      assert.strictEqual(actualOutput, expectedOutput);
+    })
+
+    it("returns false if no winning line is found", () => {
+      const emptyBoard = new Board();
+      const actualOutput = emptyBoard._checkForWinner();
+      const expectedOutput = false;
+      assert.strictEqual(actualOutput, expectedOutput);
+    })
+  })
+
+  describe("_checkForDraw()", () => {
+    it("returns true if the board is completely full", () => {
+      const fullBoard = new Board();
+      fullBoard.set(0, 0, "x").set(0, 1, "x").set(0, 2, "x").set(0, 3, "x").set(0, 4, "x").set(0, 5, "x").set(0, 6, "x");
+
+      const actualOutput = fullBoard._checkForDraw();
+      const expectedOutput = true;
+      assert.strictEqual(actualOutput, expectedOutput);
+    })
+  })
+
+  // describe("maveMove()", () => {
+  //   beforeEach(() => {
+  //     this.winningBoard = new Board([
+  //       //  0    1    2    3    4    5    6
+  //         ['-', '-', '-', '-', '-', '-', '-'], // 0  
+  //         ['-', '-', '-', '-', '-', '-', '-'], // 1  
+  //         ['-', 'y', '-', '-', '-', '-', '-'], // 2  
+  //         ['x', '-', 'y', '-', '-', '-', '-'], // 3  
+  //         ['x', '-', '-', 'y', '-', '-', '-'], // 4  
+  //         ['x', '-', '-', '-', '-', '-', '-']  // 5  
+  //       ]);
+  //   }),
+  //   it("makes a winning move if it can and returns a win", () => {
+      
+  //     const outputX = this.winningBoard.makeMove("x");
+
+
+  //   })
+  // })
 })
