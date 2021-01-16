@@ -24,7 +24,7 @@ class Board {
     for (let row = 5; row >= 0; row--) {
       if (this.get(row, column) === '-') {
         this.set(row, column, symbol);
-        return true;
+        return this;
       }
     }
   }
@@ -72,17 +72,11 @@ class Board {
   }
 
   reset() {
-    this.board = this.board.map(row => {
-      return row.map(() => '-')
-    })
+    this.board = this.board.map(row => row.map(() => '-'))
   }
 
   show() {
     this.board.forEach(row => console.log(JSON.stringify(row)));
-  }
-
-  speak() {
-    console.log("I am a board and I am very much alive!");
   }
 
   clone() {
@@ -97,6 +91,21 @@ class Board {
   
   set(row, col, symbol) {
     this.board[row][col] = symbol;
+    return this;
+  }
+
+  _checkForWinner() {
+    const lines = this.scan();
+    for (const line of lines) {
+      if (line.winningX) return "x"
+      if (line.winningY) return "y"
+    }
+    return false;
+  }
+
+  _checkForDraw() {
+    if (this.board[0].every(s => s === "x" || s === "y")) return true;
+    else return false
   }
 }
   
