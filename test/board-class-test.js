@@ -101,12 +101,12 @@ describe('Board Class', () => {
     })
   })
 
-  describe("_checkForWinner()", () => {
+  describe("checkForWinner()", () => {
     it("returns 'x' if a row of four for x is found", () => {
       const winningBoard = new Board();
       winningBoard.move(0, "x").move(1, "x").move(2, "x").move(3, "x");
 
-      const actualOutput = winningBoard._checkForWinner();
+      const actualOutput = winningBoard.checkForWinner();
       const expectedOutput = "x";
       assert.strictEqual(actualOutput, expectedOutput);
     })
@@ -115,25 +115,25 @@ describe('Board Class', () => {
       const winningBoard = new Board();
       winningBoard.move(0, "y").move(0, "y").move(0, "y").move(0, "y");
       
-      const actualOutput = winningBoard._checkForWinner();
+      const actualOutput = winningBoard.checkForWinner();
       const expectedOutput = "y";
       assert.strictEqual(actualOutput, expectedOutput);
     })
 
     it("returns false if no winning line is found", () => {
       const emptyBoard = new Board();
-      const actualOutput = emptyBoard._checkForWinner();
+      const actualOutput = emptyBoard.checkForWinner();
       const expectedOutput = false;
       assert.strictEqual(actualOutput, expectedOutput);
     })
   })
 
-  describe("_checkForDraw()", () => {
+  describe("checkForDraw()", () => {
     it("returns true if the board is completely full", () => {
       const fullBoard = new Board();
       fullBoard.set(0, 0, "x").set(0, 1, "x").set(0, 2, "x").set(0, 3, "x").set(0, 4, "x").set(0, 5, "x").set(0, 6, "x");
 
-      const actualOutput = fullBoard._checkForDraw();
+      const actualOutput = fullBoard.checkForDraw();
       const expectedOutput = true;
       assert.strictEqual(actualOutput, expectedOutput);
     })

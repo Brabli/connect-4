@@ -94,7 +94,7 @@ class Board {
     return this;
   }
 
-  _checkForWinner() {
+  checkForWinner() {
     const lines = this.scan();
     for (const line of lines) {
       if (line.winningX) return "x"
@@ -103,7 +103,7 @@ class Board {
     return false;
   }
 
-  _checkForDraw() {
+  checkForDraw() {
     if (this.board[0].every(s => s === "x" || s === "y")) return true;
     else return false
   }
